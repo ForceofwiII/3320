@@ -7,7 +7,7 @@ package com.fow;
  * (at least on platforms that use 32-bit "limbs").
  */
 
-public class MyMPN
+public class MPN
 {
   /** Add x[0:size-1] and y, and write the size least
    * significant words of the result to dest.
@@ -105,7 +105,7 @@ public class MyMPN
 			  int[] x, int xlen,
 			  int[] y, int ylen)
   {
-    dest[xlen] = MyMPN.mul_1 (dest, x, xlen, y[0]);
+    dest[xlen] = MPN.mul_1 (dest, x, xlen, y[0]);
 
     for (int i = 1;  i < ylen; i++)
       {
@@ -409,7 +409,7 @@ public class MyMPN
     else
       {
 	// General case.  The base is not a power of 2.
-	int indigits_per_limb = MyMPN.chars_per_word (base);
+	int indigits_per_limb = MPN.chars_per_word (base);
 	int str_pos = 0;
 
 	while (str_pos < str_len)
@@ -431,8 +431,8 @@ public class MyMPN
 	      cy_limb = res_digit;
 	    else
 	      {
-		cy_limb = MyMPN.mul_1 (dest, dest, size, big_base);
-		cy_limb += MyMPN.add_1 (dest, dest, size, res_digit);
+		cy_limb = MPN.mul_1 (dest, dest, size, big_base);
+		cy_limb += MPN.add_1 (dest, dest, size, res_digit);
 	      }
 	    if (cy_limb != 0)
 	      dest[size++] = cy_limb;
@@ -619,8 +619,8 @@ public class MyMPN
 
     // Temporarily devide both x and y by 2**sh.
     len -= initShiftWords;
-    MyMPN.rshift0 (x, x, initShiftWords, len, initShiftBits);
-    MyMPN.rshift0 (y, y, initShiftWords, len, initShiftBits);
+    MPN.rshift0 (x, x, initShiftWords, len, initShiftBits);
+    MPN.rshift0 (y, y, initShiftWords, len, initShiftBits);
 
     int[] odd_arg; /* One of x or y which is odd. */
     int[] other_arg; /* The other one can be even or odd. */
@@ -651,24 +651,24 @@ public class MyMPN
 	  }
 	i = findLowestBit(other_arg[0]);
 	if (i > 0)
-	  MyMPN.rshift (other_arg, other_arg, 0, len, i);
+	  MPN.rshift (other_arg, other_arg, 0, len, i);
 
 	// Now both odd_arg and other_arg are odd.
 
 	// Subtract the smaller from the larger.
 	// This does not change the result, since gcd(a-b,b)==gcd(a,b).
-	i = MyMPN.cmp(odd_arg, other_arg, len);
+	i = MPN.cmp(odd_arg, other_arg, len);
 	if (i == 0)
 	    break;
 	if (i > 0)
 	  { // odd_arg > other_arg
-	    MyMPN.sub_n (odd_arg, odd_arg, other_arg, len);
+	    MPN.sub_n (odd_arg, odd_arg, other_arg, len);
 	    // Now odd_arg is even, so swap with other_arg;
 	    int[] tmp = odd_arg; odd_arg = other_arg; other_arg = tmp;
 	  }
 	else
 	  { // other_arg > odd_arg
-	    MyMPN.sub_n (other_arg, other_arg, odd_arg, len);
+	    MPN.sub_n (other_arg, other_arg, odd_arg, len);
 	}
 	while (odd_arg[len-1] == 0 && other_arg[len-1] == 0)
 	  len--;
@@ -677,7 +677,7 @@ public class MyMPN
       {
 	if (initShiftBits > 0)
 	  {
-	    int sh_out = MyMPN.lshift (x, initShiftWords, x, len, initShiftBits);
+	    int sh_out = MPN.lshift (x, initShiftWords, x, len, initShiftBits);
 	    if (sh_out != 0)
 	      x[(len++)+initShiftWords] = sh_out;
 	  }

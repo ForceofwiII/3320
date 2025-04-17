@@ -17,7 +17,7 @@ import java.util.Random;
  * @date December 20, 1999.
  * @status believed complete and correct.
  */
-public class MyBigInteger extends Number implements Comparable<MyBigInteger>
+public class BigInteger extends Number implements Comparable<BigInteger>
 {
     /**
      * All integers are stored in 2's-complement form.
@@ -45,12 +45,12 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     private static final int minFixNum = -100;
     private static final int maxFixNum = 1024;
     private static final int numFixNum = maxFixNum - minFixNum + 1;
-    private static final MyBigInteger[] smallFixNums = new MyBigInteger[numFixNum];
+    private static final BigInteger[] smallFixNums = new BigInteger[numFixNum];
 
     static
     {
         for (int i = numFixNum; --i >= 0; )
-            smallFixNums[i] = new MyBigInteger(i + minFixNum);
+            smallFixNums[i] = new BigInteger(i + minFixNum);
     }
 
     /**
@@ -58,21 +58,21 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      *
      * @since 1.2
      */
-    public static final MyBigInteger ZERO = smallFixNums[0 - minFixNum];
+    public static final BigInteger ZERO = smallFixNums[0 - minFixNum];
 
     /**
      * The constant one as a main.BigInteger.
      *
      * @since 1.2
      */
-    public static final MyBigInteger ONE = smallFixNums[1 - minFixNum];
+    public static final BigInteger ONE = smallFixNums[1 - minFixNum];
 
     /**
      * The constant ten as a main.BigInteger.
      *
      * @since 1.5
      */
-    public static final MyBigInteger TEN = smallFixNums[10 - minFixNum];
+    public static final BigInteger TEN = smallFixNums[10 - minFixNum];
 
     /* Rounding modes: */
     private static final int FLOOR = 1;
@@ -96,39 +96,39 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     private static final int[] k = {100, 150, 200, 250, 300, 350, 400, 500, 600, 800, 1250, Integer.MAX_VALUE};
     private static final int[] t = {27, 18, 15, 12, 9, 8, 7, 6, 5, 4, 3, 2};
 
-    private MyBigInteger() {}
+    private BigInteger() {}
 
     /* Create a new (non-shared) main.BigInteger, and initialize to an int. */
-    private MyBigInteger(int value)
+    private BigInteger(int value)
     {
         ival = value;
     }
 
-    public MyBigInteger(String val, int radix)
+    public BigInteger(String val, int radix)
     {
-        MyBigInteger result = valueOf(val, radix);
+        BigInteger result = valueOf(val, radix);
         this.ival = result.ival;
         this.words = result.words;
     }
 
-    public MyBigInteger(String val)
+    public BigInteger(String val)
     {
         this(val, 10);
     }
 
     /* Create a new (non-shared) main.BigInteger, and initialize from a byte array. */
-    public MyBigInteger(byte[] val)
+    public BigInteger(byte[] val)
     {
         if (val == null || val.length < 1)
             throw new NumberFormatException();
 
         words = byteArrayToIntArray(val, val[0] < 0 ? -1 : 0);
-        MyBigInteger result = make(words, words.length);
+        BigInteger result = make(words, words.length);
         this.ival = result.ival;
         this.words = result.words;
     }
 
-    public MyBigInteger(int signum, byte[] magnitude)
+    public BigInteger(int signum, byte[] magnitude)
     {
         if (magnitude == null || signum > 1 || signum < -1)
             throw new NumberFormatException();
@@ -144,7 +144,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
 
         // Magnitude is always positive, so don't ever pass a sign of -1.
         words = byteArrayToIntArray(magnitude, 0);
-        MyBigInteger result = make(words, words.length);
+        BigInteger result = make(words, words.length);
         this.ival = result.ival;
         this.words = result.words;
 
@@ -152,7 +152,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             setNegative();
     }
 
-    public MyBigInteger(int numBits, Random rnd)
+    public BigInteger(int numBits, Random rnd)
     {
         if (numBits < 0)
             throw new IllegalArgumentException();
@@ -193,12 +193,12 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         }
     }
 
-    public MyBigInteger(int bitLength, int certainty, Random rnd)
+    public BigInteger(int bitLength, int certainty, Random rnd)
     {
         this(bitLength, rnd);
 
         // Keep going until we find a probable prime.
-        MyBigInteger result;
+        BigInteger result;
         while (true) {
             // ...but first ensure that BI has bitLength bits
             result = setBit(bitLength - 1);
@@ -220,25 +220,25 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      * @throws ArithmeticException if bitLength < 2
      * @since 1.4
      */
-    public static MyBigInteger probablePrime(int bitLength, Random rnd)
+    public static BigInteger probablePrime(int bitLength, Random rnd)
     {
         if (bitLength < 2)
             throw new ArithmeticException();
 
-        return new MyBigInteger(bitLength, 100, rnd);
+        return new BigInteger(bitLength, 100, rnd);
     }
 
     /**
      * Return a (possibly-shared) main.BigInteger with a given long value.
      */
-    public static MyBigInteger valueOf(long val)
+    public static BigInteger valueOf(long val)
     {
         if (val >= minFixNum && val <= maxFixNum)
             return smallFixNums[(int) val - minFixNum];
         int i = (int) val;
         if ((long) i == val)
-            return new MyBigInteger(i);
-        MyBigInteger result = alloc(2);
+            return new BigInteger(i);
+        BigInteger result = alloc(2);
         result.ival = 2;
         result.words[0] = i;
         result.words[1] = (int) (val >> 32);
@@ -249,14 +249,14 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      * Make a canonicalized main.BigInteger from an array of words.
      * The array may be reused (without copying).
      */
-    private static MyBigInteger make(int[] words, int len)
+    private static BigInteger make(int[] words, int len)
     {
         if (words == null)
             return valueOf(len);
-        len = MyBigInteger.wordsNeeded(words, len);
+        len = BigInteger.wordsNeeded(words, len);
         if (len <= 1)
             return len == 0 ? ZERO : valueOf(words[0]);
-        MyBigInteger num = new MyBigInteger();
+        BigInteger num = new BigInteger();
         num.words = words;
         num.ival = len;
         return num;
@@ -292,9 +292,9 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      *
      * @param nwords number of words to allocate
      */
-    private static MyBigInteger alloc(int nwords)
+    private static BigInteger alloc(int nwords)
     {
-        MyBigInteger result = new MyBigInteger();
+        BigInteger result = new BigInteger();
         if (nwords > 1)
             result.words = new int[nwords];
         return result;
@@ -341,7 +341,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return top < 0 ? -1 : 1;
     }
 
-    private static int compareTo(MyBigInteger x, MyBigInteger y)
+    private static int compareTo(BigInteger x, BigInteger y)
     {
         if (x.words == null && y.words == null)
         {
@@ -364,23 +364,23 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             return (x_len > y_len) != x_negative ? 1 : -1;
         }
 
-        return MyMPN.cmp(x.words, y.words, x_len);
+        return MPN.cmp(x.words, y.words, x_len);
     }
 
     /**
      * @since 1.2
      */
-    public int compareTo(MyBigInteger val)
+    public int compareTo(BigInteger val)
     {
         return compareTo(this, val);
     }
 
-    public MyBigInteger min(MyBigInteger val)
+    public BigInteger min(BigInteger val)
     {
         return compareTo(this, val) < 0 ? this : val;
     }
 
-    public MyBigInteger max(MyBigInteger val)
+    public BigInteger max(BigInteger val)
     {
         return compareTo(this, val) > 0 ? this : val;
     }
@@ -417,10 +417,10 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return i + 1;
     }
 
-    private MyBigInteger canonicalize()
+    private BigInteger canonicalize()
     {
         if (words != null
-                && (ival = MyBigInteger.wordsNeeded(words, ival)) <= 1) {
+                && (ival = BigInteger.wordsNeeded(words, ival)) <= 1) {
             if (ival == 1)
                 ival = words[0];
             words = null;
@@ -433,7 +433,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Add two ints, yielding a main.BigInteger.
      */
-    private static MyBigInteger add(int x, int y)
+    private static BigInteger add(int x, int y)
     {
         return valueOf((long) x + (long) y);
     }
@@ -441,11 +441,11 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Add a main.BigInteger and an int, yielding a new main.BigInteger.
      */
-    private static MyBigInteger add(MyBigInteger x, int y)
+    private static BigInteger add(BigInteger x, int y)
     {
         if (x.words == null)
-            return MyBigInteger.add(x.ival, y);
-        MyBigInteger result = new MyBigInteger(0);
+            return BigInteger.add(x.ival, y);
+        BigInteger result = new BigInteger(0);
         result.setAdd(x, y);
         return result.canonicalize();
     }
@@ -454,7 +454,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      * Set this to the sum of x and y.
      * OK if x==this.
      */
-    private void setAdd(MyBigInteger x, int y)
+    private void setAdd(BigInteger x, int y)
     {
         if (x.words == null) {
             set((long) x.ival + (long) y);
@@ -512,7 +512,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Destructively set the value of this to that of y.
      */
-    private void set(MyBigInteger y)
+    private void set(BigInteger y)
     {
         if (y.words == null)
             set(y.ival);
@@ -526,29 +526,29 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Add two BigIntegers, yielding their sum as another main.BigInteger.
      */
-    private static MyBigInteger add(MyBigInteger x, MyBigInteger y, int k)
+    private static BigInteger add(BigInteger x, BigInteger y, int k)
     {
         if (x.words == null && y.words == null)
             return valueOf((long) k * (long) y.ival + (long) x.ival);
         if (k != 1) {
             if (k == -1)
-                y = MyBigInteger.neg(y);
+                y = BigInteger.neg(y);
             else
-                y = MyBigInteger.times(y, valueOf(k));
+                y = BigInteger.times(y, valueOf(k));
         }
         if (x.words == null)
-            return MyBigInteger.add(y, x.ival);
+            return BigInteger.add(y, x.ival);
         if (y.words == null)
-            return MyBigInteger.add(x, y.ival);
+            return BigInteger.add(x, y.ival);
         // Both are big
         if (y.ival > x.ival) { // Swap so x is longer then y.
-            MyBigInteger tmp = x;
+            BigInteger tmp = x;
             x = y;
             y = tmp;
         }
-        MyBigInteger result = alloc(x.ival + 1);
+        BigInteger result = alloc(x.ival + 1);
         int i = y.ival;
-        long carry = MyMPN.add_n(result.words, x.words, y.words, i);
+        long carry = MPN.add_n(result.words, x.words, y.words, i);
         long y_ext = y.words[i - 1] < 0 ? 0xffffffffL : 0;
         for (; i < x.ival; i++) {
             carry += ((long) x.words[i] & 0xffffffffL) + y_ext;
@@ -562,17 +562,17 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return result.canonicalize();
     }
 
-    public MyBigInteger add(MyBigInteger val)
+    public BigInteger add(BigInteger val)
     {
         return add(this, val, 1);
     }
 
-    public MyBigInteger subtract(MyBigInteger val)
+    public BigInteger subtract(BigInteger val)
     {
         return add(this, val, -1);
     }
 
-    private static MyBigInteger times(MyBigInteger x, int y)
+    private static BigInteger times(BigInteger x, int y)
     {
         if (y == 0)
             return ZERO;
@@ -583,7 +583,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         if (xwords == null)
             return valueOf((long) xlen * (long) y);
         boolean negative;
-        MyBigInteger result = MyBigInteger.alloc(xlen + 1);
+        BigInteger result = BigInteger.alloc(xlen + 1);
         if (xwords[xlen - 1] < 0) {
             negative = true;
             negate(result.words, xwords, xlen);
@@ -594,14 +594,14 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             negative = !negative;
             y = -y;
         }
-        result.words[xlen] = MyMPN.mul_1(result.words, xwords, xlen, y);
+        result.words[xlen] = MPN.mul_1(result.words, xwords, xlen, y);
         result.ival = xlen + 1;
         if (negative)
             result.setNegative();
         return result.canonicalize();
     }
 
-    private static MyBigInteger times(MyBigInteger x, MyBigInteger y)
+    private static BigInteger times(BigInteger x, BigInteger y)
     {
         if (y.words == null)
             return times(x, y.ival);
@@ -635,20 +635,20 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             xlen = ylen;
             ylen = tlen;
         }
-        MyBigInteger result = MyBigInteger.alloc(xlen + ylen);
-        MyMPN.mul(result.words, xwords, xlen, ywords, ylen);
+        BigInteger result = BigInteger.alloc(xlen + ylen);
+        MPN.mul(result.words, xwords, xlen, ywords, ylen);
         result.ival = xlen + ylen;
         if (negative)
             result.setNegative();
         return result.canonicalize();
     }
 
-    public MyBigInteger multiply(MyBigInteger y)
+    public BigInteger multiply(BigInteger y)
     {
         return times(this, y);
     }
 
-    private static void divide(long x, long y, MyBigInteger quotient, MyBigInteger remainder, int rounding_mode)
+    private static void divide(long x, long y, BigInteger quotient, BigInteger remainder, int rounding_mode)
     {
         boolean xNegative, yNegative;
 
@@ -747,8 +747,8 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      *                      (iff remainder!=null)
      * @param rounding_mode one of FLOOR, CEILING, TRUNCATE, or ROUND.
      */
-    private static void divide(MyBigInteger x, MyBigInteger y,
-                               MyBigInteger quotient, MyBigInteger remainder,
+    private static void divide(BigInteger x, BigInteger y,
+                               BigInteger quotient, BigInteger remainder,
                                int rounding_mode)
     {
         if ((x.words == null || x.ival <= 2)
@@ -777,7 +777,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
 
         int qlen, rlen;
 
-        int cmpval = MyMPN.cmp(xwords, xlen, ywords, ylen);
+        int cmpval = MPN.cmp(xwords, xlen, ywords, ylen);
         if (cmpval < 0)  // abs(x) < abs(y)
         { // quotient = 0;  remainder = num.
             int[] rwords = xwords;
@@ -801,30 +801,30 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             if (ywords[0] == 1 && xwords[xlen - 1] < 0)
                 qlen++;
             rlen = 1;
-            ywords[0] = MyMPN.divmod_1(xwords, xwords, xlen, ywords[0]);
+            ywords[0] = MPN.divmod_1(xwords, xwords, xlen, ywords[0]);
         } else  // abs(x) > abs(y)
         {
             // Normalize the denominator, i.e. make its most significant bit set by
             // shifting it normalization_steps bits to the left.  Also shift the
             // numerator the same number of steps (to keep the quotient the same!).
 
-            int nshift = MyMPN.count_leading_zeros(ywords[ylen - 1]);
+            int nshift = MPN.count_leading_zeros(ywords[ylen - 1]);
             if (nshift != 0) {
                 // Shift up the denominator setting the most significant bit of
                 // the most significant word.
-                MyMPN.lshift(ywords, 0, ywords, ylen, nshift);
+                MPN.lshift(ywords, 0, ywords, ylen, nshift);
 
                 // Shift up the numerator, possibly introducing a new most
                 // significant word.
-                int x_high = MyMPN.lshift(xwords, 0, xwords, xlen, nshift);
+                int x_high = MPN.lshift(xwords, 0, xwords, xlen, nshift);
                 xwords[xlen++] = x_high;
             }
 
             if (xlen == ylen)
                 xwords[xlen++] = 0;
-            MyMPN.divide(xwords, xlen, ywords, ylen);
+            MPN.divide(xwords, xlen, ywords, ylen);
             rlen = ylen;
-            MyMPN.rshift0(ywords, xwords, 0, rlen, nshift);
+            MPN.rshift0(ywords, xwords, 0, rlen, nshift);
 
             qlen = xlen + 1 - ylen;
             if (quotient != null) {
@@ -852,7 +852,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
                     break;
                 case ROUND:
                     // int cmp = compareTo(remainder<<1, abs(y));
-                    MyBigInteger tmp = remainder == null ? new MyBigInteger() : remainder;
+                    BigInteger tmp = remainder == null ? new BigInteger() : remainder;
                     tmp.set(ywords, rlen);
                     tmp = shift(tmp, 1);
                     if (yNegative)
@@ -880,12 +880,12 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             if (add_one) {
                 // Subtract the remainder from Y:
                 // abs(R) = abs(Y) - abs(orig_rem) = -(abs(orig_rem) - abs(Y)).
-                MyBigInteger tmp;
+                BigInteger tmp;
                 if (y.words == null) {
                     tmp = remainder;
                     tmp.set(yNegative ? ywords[0] + y.ival : ywords[0] - y.ival);
                 } else
-                    tmp = MyBigInteger.add(remainder, y, yNegative ? 1 : -1);
+                    tmp = BigInteger.add(remainder, y, yNegative ? 1 : -1);
                 // Now tmp <= 0.
                 // In this case, abs(Q) = 1 + floor(abs(X)/abs(Y)).
                 // Hence, abs(Q*Y) > abs(X).
@@ -903,46 +903,46 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         }
     }
 
-    public MyBigInteger divide(MyBigInteger val)
+    public BigInteger divide(BigInteger val)
     {
         if (val.isZero())
             throw new ArithmeticException("divisor is zero");
 
-        MyBigInteger quot = new MyBigInteger();
+        BigInteger quot = new BigInteger();
         divide(this, val, quot, null, TRUNCATE);
         return quot.canonicalize();
     }
 
-    public MyBigInteger remainder(MyBigInteger val)
+    public BigInteger remainder(BigInteger val)
     {
         if (val.isZero())
             throw new ArithmeticException("divisor is zero");
 
-        MyBigInteger rem = new MyBigInteger();
+        BigInteger rem = new BigInteger();
         divide(this, val, null, rem, TRUNCATE);
         return rem.canonicalize();
     }
 
-    public MyBigInteger[] divideAndRemainder(MyBigInteger val)
+    public BigInteger[] divideAndRemainder(BigInteger val)
     {
         if (val.isZero())
             throw new ArithmeticException("divisor is zero");
 
-        MyBigInteger[] result = new MyBigInteger[2];
-        result[0] = new MyBigInteger();
-        result[1] = new MyBigInteger();
+        BigInteger[] result = new BigInteger[2];
+        result[0] = new BigInteger();
+        result[1] = new BigInteger();
         divide(this, val, result[0], result[1], TRUNCATE);
         result[0].canonicalize();
         result[1].canonicalize();
         return result;
     }
 
-    public MyBigInteger mod(MyBigInteger m)
+    public BigInteger mod(BigInteger m)
     {
         if (m.isNegative() || m.isZero())
             throw new ArithmeticException("non-positive modulus");
 
-        MyBigInteger rem = new MyBigInteger();
+        BigInteger rem = new BigInteger();
         divide(this, m, null, rem, FLOOR);
         return rem.canonicalize();
     }
@@ -952,7 +952,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      *
      * @param exponent the exponent (must be non-negative)
      */
-    public MyBigInteger pow(int exponent)
+    public BigInteger pow(int exponent)
     {
         if (exponent <= 0) {
             if (exponent == 0)
@@ -975,7 +975,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             // pow2 == this**(2**i)
             // prod = this**(sum(j=0..i-1, (exponent>>j)&1))
             if ((exponent & 1) != 0) { // r *= pow2
-                MyMPN.mul(work, pow2, plen, rwords, rlen);
+                MPN.mul(work, pow2, plen, rwords, rlen);
                 int[] temp = work;
                 work = rwords;
                 rwords = temp;
@@ -986,7 +986,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             if (exponent == 0)
                 break;
             // pow2 *= pow2;
-            MyMPN.mul(work, pow2, plen, pow2, plen);
+            MPN.mul(work, pow2, plen, pow2, plen);
             int[] temp = work;
             work = pow2;
             pow2 = temp;  // swap to avoid a copy
@@ -997,7 +997,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             rlen++;
         if (negative)
             negate(rwords, rwords, rlen);
-        return MyBigInteger.make(rwords, rlen);
+        return BigInteger.make(rwords, rlen);
     }
 
     private static int[] euclidInv(int a, int b, int prevDiv)
@@ -1017,7 +1017,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return xy;
     }
 
-    private static void euclidInv(MyBigInteger a, MyBigInteger b, MyBigInteger prevDiv, MyBigInteger[] xy)
+    private static void euclidInv(BigInteger a, BigInteger b, BigInteger prevDiv, BigInteger[] xy)
     {
         if (b.isZero())
         {
@@ -1039,13 +1039,13 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         if (a.words == null)
         {
             int[] xyInt = euclidInv(b.ival, a.ival % b.ival, a.ival / b.ival);
-            xy[0] = new MyBigInteger(xyInt[0]);
-            xy[1] = new MyBigInteger(xyInt[1]);
+            xy[0] = new BigInteger(xyInt[0]);
+            xy[1] = new BigInteger(xyInt[1]);
         }
         else
             {
-            MyBigInteger rem = new MyBigInteger();
-            MyBigInteger quot = new MyBigInteger();
+            BigInteger rem = new BigInteger();
+            BigInteger quot = new BigInteger();
             divide(a, b, quot, rem, FLOOR);
             // quot and rem may not be in canonical form. ensure
             rem.canonicalize();
@@ -1053,12 +1053,12 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             euclidInv(b, rem, quot, xy);
         }
 
-        MyBigInteger t = xy[0];
+        BigInteger t = xy[0];
         xy[0] = add(xy[1], times(t, prevDiv), -1);
         xy[1] = t;
     }
 
-    public MyBigInteger modInverse(MyBigInteger y)
+    public BigInteger modInverse(BigInteger y)
     {
     	System.out.println("test modInverse");
         if (y.isNegative() || y.isZero())
@@ -1077,7 +1077,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             return ONE;
         }
 
-        MyBigInteger result = new MyBigInteger();
+        BigInteger result = new BigInteger();
         boolean swapped = false;
 
         if (y.words == null)
@@ -1106,7 +1106,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         else
         {
             // As above, force this to be a positive value via modulo math.
-            MyBigInteger x = isNegative() ? this.mod(y) : this;
+            BigInteger x = isNegative() ? this.mod(y) : this;
 
             // Swap values so x > y.
             if (x.compareTo(y) < 0)
@@ -1119,14 +1119,14 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
 
             // As above (for ints), result will be in the 2nd element unless
             // the original x and y were swapped.
-            MyBigInteger rem = new MyBigInteger();
-            MyBigInteger quot = new MyBigInteger();
+            BigInteger rem = new BigInteger();
+            BigInteger quot = new BigInteger();
             divide(x, y, quot, rem, FLOOR);
 
             // quot and rem may not be in canonical form. ensure
             rem.canonicalize();
             quot.canonicalize();
-            MyBigInteger[] xy = new MyBigInteger[2];
+            BigInteger[] xy = new BigInteger[2];
             euclidInv(y, rem, quot, xy);
             result = swapped ? xy[0] : xy[1];
 
@@ -1141,7 +1141,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return result;
     }
 
-    public MyBigInteger modPow(MyBigInteger exponent, MyBigInteger m)
+    public BigInteger modPow(BigInteger exponent, BigInteger m)
     {
         if (m.isNegative() || m.isZero())
             throw new ArithmeticException("non-positive modulo");
@@ -1158,9 +1158,9 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         //
         // We'll use the algorithm for Additive Chaining which can be found on
         // p. 244 of "Applied Cryptography, Second Edition" by Bruce Schneier.
-        MyBigInteger s = ONE;
-        MyBigInteger t = this;
-        MyBigInteger u = exponent;
+        BigInteger s = ONE;
+        BigInteger t = this;
+        BigInteger u = exponent;
 
         while (!u.isZero()) {
             if (u.and(ONE).isOne())
@@ -1195,7 +1195,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         }
     }
 
-    public MyBigInteger gcd(MyBigInteger y)
+    public BigInteger gcd(BigInteger y)
     {
         int xval = ival;
         int yval = y.ival;
@@ -1239,8 +1239,8 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         int[] ywords = new int[len];
         getAbsolute(xwords);
         y.getAbsolute(ywords);
-        len = MyMPN.gcd(xwords, ywords, len);
-        MyBigInteger result = new MyBigInteger(0);
+        len = MPN.gcd(xwords, ywords, len);
+        BigInteger result = new BigInteger(0);
         result.ival = len;
         result.words = xwords;
         return result.canonicalize();
@@ -1276,7 +1276,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
          */
 
         // First rule out small prime factors
-        MyBigInteger rem = new MyBigInteger();
+        BigInteger rem = new BigInteger();
         int i;
         for (i = 0; i < primes.length; i++) {
             if (words == null && ival == primes[i])
@@ -1291,11 +1291,11 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
 
         // Set b to the number of times 2 evenly divides (this - 1).
         // I.e. 2^b is the largest power of 2 that divides (this - 1).
-        MyBigInteger pMinus1 = add(this, -1);
+        BigInteger pMinus1 = add(this, -1);
         int b = pMinus1.getLowestSetBit();
 
         // Set m such that this = 1 + 2^b * m.
-        MyBigInteger m = pMinus1.divide(valueOf(2L << b - 1));
+        BigInteger m = pMinus1.divide(valueOf(2L << b - 1));
 
         // The HAC (Handbook of Applied Cryptography), Alfred Menezes & al. Note
         // 4.49 (controlling the error probability) gives the number of trials
@@ -1309,7 +1309,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         int trials = t[i];
         if (certainty > 80)
             trials *= 2;
-        MyBigInteger z;
+        BigInteger z;
         for (int t = 0; t < trials; t++) {
             // The HAC (Handbook of Applied Cryptography), Alfred Menezes & al.
             // Remark 4.28 states: "...A strategy that is sometimes employed
@@ -1345,7 +1345,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         }
     }
 
-    private void setShiftLeft(MyBigInteger x, int count)
+    private void setShiftLeft(BigInteger x, int count)
     {
         int[] xwords;
         int xlen;
@@ -1371,7 +1371,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         } else {
             new_len++;
             realloc(new_len);
-            int shift_out = MyMPN.lshift(words, word_count, xwords, xlen, count);
+            int shift_out = MPN.lshift(words, word_count, xwords, xlen, count);
             count = 32 - count;
             words[new_len - 1] = (shift_out << count) >> count;  // sign-extend.
         }
@@ -1380,7 +1380,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             words[i] = 0;
     }
 
-    private void setShiftRight(MyBigInteger x, int count)
+    private void setShiftRight(BigInteger x, int count)
     {
         if (x.words == null)
             set(count < 32 ? x.ival >> count : x.ival < 0 ? -1 : 0);
@@ -1396,7 +1396,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             else {
                 if (words == null || words.length < d_len)
                     realloc(d_len);
-                MyMPN.rshift0(words, x.words, word_count, d_len, count);
+                MPN.rshift0(words, x.words, word_count, d_len, count);
                 ival = d_len;
                 if (neg)
                     words[d_len - 1] |= -2 << (31 - count);
@@ -1404,7 +1404,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         }
     }
 
-    private void setShift(MyBigInteger x, int count)
+    private void setShift(BigInteger x, int count)
     {
         if (count > 0)
             setShiftLeft(x, count);
@@ -1412,7 +1412,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             setShiftRight(x, -count);
     }
 
-    private static MyBigInteger shift(MyBigInteger x, int count)
+    private static BigInteger shift(BigInteger x, int count)
     {
         if (x.words == null) {
             if (count <= 0)
@@ -1422,17 +1422,17 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         }
         if (count == 0)
             return x;
-        MyBigInteger result = new MyBigInteger(0);
+        BigInteger result = new BigInteger(0);
         result.setShift(x, count);
         return result.canonicalize();
     }
 
-    public MyBigInteger shiftLeft(int n)
+    public BigInteger shiftLeft(int n)
     {
         return shift(this, n);
     }
 
-    public MyBigInteger shiftRight(int n)
+    public BigInteger shiftRight(int n)
     {
         return shift(this, -n);
     }
@@ -1469,7 +1469,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             } else {
                 int i = buffer.length();
                 for (; ; ) {
-                    int digit = MyMPN.divmod_1(work, work, len, radix);
+                    int digit = MPN.divmod_1(work, work, len, radix);
                     buffer.append(Character.forDigit(digit, radix));
                     while (len > 0 && work[len - 1] == 0) len--;
                     if (len == 0)
@@ -1501,7 +1501,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             return Integer.toString(ival, radix);
         if (ival <= 2)
             return Long.toString(longValue(), radix);
-        int buf_size = ival * (MyMPN.chars_per_word(radix) + 1);
+        int buf_size = ival * (MPN.chars_per_word(radix) + 1);
         StringBuffer buffer = new StringBuffer(buf_size);
         format(radix, buffer);
         return buffer.toString();
@@ -1530,7 +1530,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     }
 
     /* Assumes x and y are both canonicalized. */
-    private static boolean equals(MyBigInteger x, MyBigInteger y)
+    private static boolean equals(BigInteger x, BigInteger y)
     {
         if (x.words == null && y.words == null)
             return x.ival == y.ival;
@@ -1546,16 +1546,16 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /* Assumes this and obj are both canonicalized. */
     public boolean equals(Object obj)
     {
-        if (!(obj instanceof MyBigInteger))
+        if (!(obj instanceof BigInteger))
             return false;
-        return equals(this, (MyBigInteger) obj);
+        return equals(this, (BigInteger) obj);
     }
 
-    private static MyBigInteger valueOf(String s, int radix)
+    private static BigInteger valueOf(String s, int radix)
             throws NumberFormatException
     {
         int len = s.length();
-        // Testing (len < main.MyMPN.chars_per_word(radix)) would be more accurate,
+        // Testing (len < main.MPN.chars_per_word(radix)) would be more accurate,
         // but slightly more expensive, for little practical gain.
         if (len <= 15 && radix <= 16)
             return valueOf(Long.parseLong(s, radix));
@@ -1584,12 +1584,12 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return valueOf(bytes, byte_len, negative, radix);
     }
 
-    private static MyBigInteger valueOf(byte[] digits, int byte_len,
-                                        boolean negative, int radix)
+    private static BigInteger valueOf(byte[] digits, int byte_len,
+                                      boolean negative, int radix)
     {
-        int chars_per_word = MyMPN.chars_per_word(radix);
+        int chars_per_word = MPN.chars_per_word(radix);
         int[] words = new int[byte_len / chars_per_word + 1];
-        int size = MyMPN.set_str(words, digits, byte_len, radix);
+        int size = MPN.set_str(words, digits, byte_len, radix);
         if (size == 0)
             return ZERO;
         if (words[size - 1] < 0)
@@ -1672,7 +1672,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         int excess_bits = il - (ml + 1);
         if (excess_bits > 0)
             m = ((words == null) ? ival >> excess_bits
-                    : MyMPN.rshift_long(words, ival, excess_bits));
+                    : MPN.rshift_long(words, ival, excess_bits));
         else
             m = longValue() << (-excess_bits);
 
@@ -1755,7 +1755,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
      * Destructively set this to the negative of x.
      * It is OK if x==this.
      */
-    private void setNegative(MyBigInteger x)
+    private void setNegative(BigInteger x)
     {
         int len = x.ival;
         if (x.words == null) {
@@ -1779,26 +1779,26 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         setNegative(this);
     }
 
-    private static MyBigInteger abs(MyBigInteger x)
+    private static BigInteger abs(BigInteger x)
     {
         return x.isNegative() ? neg(x) : x;
     }
 
-    public MyBigInteger abs()
+    public BigInteger abs()
     {
         return abs(this);
     }
 
-    private static MyBigInteger neg(MyBigInteger x)
+    private static BigInteger neg(BigInteger x)
     {
         if (x.words == null && x.ival != Integer.MIN_VALUE)
             return valueOf(-x.ival);
-        MyBigInteger result = new MyBigInteger(0);
+        BigInteger result = new BigInteger(0);
         result.setNegative(x);
         return result.canonicalize();
     }
 
-    public MyBigInteger negate()
+    public BigInteger negate()
     {
         return neg(this);
     }
@@ -1810,8 +1810,8 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     public int bitLength()
     {
         if (words == null)
-            return MyMPN.intLength(ival);
-        return MyMPN.intLength(words, ival);
+            return MPN.intLength(ival);
+        return MPN.intLength(words, ival);
     }
 
     public byte[] toByteArray()
@@ -1855,7 +1855,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Do one the the 16 possible bit-wise operations of two BigIntegers.
      */
-    private static MyBigInteger bitOp(int op, MyBigInteger x, MyBigInteger y)
+    private static BigInteger bitOp(int op, BigInteger x, BigInteger y)
     {
         switch (op) {
             case 0:
@@ -1869,7 +1869,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             case 15:
                 return valueOf(-1);
         }
-        MyBigInteger result = new MyBigInteger();
+        BigInteger result = new BigInteger();
         setBitOp(result, op, x, y);
         return result.canonicalize();
     }
@@ -1877,11 +1877,11 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Do one the the 16 possible bit-wise operations of two BigIntegers.
      */
-    private static void setBitOp(MyBigInteger result, int op,
-                                 MyBigInteger x, MyBigInteger y)
+    private static void setBitOp(BigInteger result, int op,
+                                 BigInteger x, BigInteger y)
     {
         if ((y.words != null) && (x.words == null || x.ival < y.ival)) {
-            MyBigInteger temp = x;
+            BigInteger temp = x;
             x = y;
             y = temp;
             op = swappedOp(op);
@@ -2075,7 +2075,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Return the logical (bit-wise) "and" of a main.BigInteger and an int.
      */
-    private static MyBigInteger and(MyBigInteger x, int y)
+    private static BigInteger and(BigInteger x, int y)
     {
         if (x.words == null)
             return valueOf(x.ival & y);
@@ -2092,16 +2092,16 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Return the logical (bit-wise) "and" of two BigIntegers.
      */
-    public MyBigInteger and(MyBigInteger y)
+    public BigInteger and(BigInteger y)
     {
         if (y.words == null)
             return and(this, y.ival);
         else if (words == null)
             return and(y, ival);
 
-        MyBigInteger x = this;
+        BigInteger x = this;
         if (ival < y.ival) {
-            MyBigInteger temp = this;
+            BigInteger temp = this;
             x = y;
             y = temp;
         }
@@ -2118,7 +2118,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Return the logical (bit-wise) "(inclusive) or" of two BigIntegers.
      */
-    public MyBigInteger or(MyBigInteger y)
+    public BigInteger or(BigInteger y)
     {
         return bitOp(7, this, y);
     }
@@ -2126,7 +2126,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Return the logical (bit-wise) "exclusive or" of two BigIntegers.
      */
-    public MyBigInteger xor(MyBigInteger y)
+    public BigInteger xor(BigInteger y)
     {
         return bitOp(6, this, y);
     }
@@ -2134,17 +2134,17 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
     /**
      * Return the logical (bit-wise) negation of a main.BigInteger.
      */
-    public MyBigInteger not()
+    public BigInteger not()
     {
         return bitOp(12, this, ZERO);
     }
 
-    public MyBigInteger andNot(MyBigInteger val)
+    public BigInteger andNot(BigInteger val)
     {
         return and(val.not());
     }
 
-    public MyBigInteger clearBit(int n)
+    public BigInteger clearBit(int n)
     {
         if (n < 0)
             throw new ArithmeticException();
@@ -2152,7 +2152,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return and(ONE.shiftLeft(n).not());
     }
 
-    public MyBigInteger setBit(int n)
+    public BigInteger setBit(int n)
     {
         if (n < 0)
             throw new ArithmeticException();
@@ -2168,7 +2168,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
         return !and(ONE.shiftLeft(n)).isZero();
     }
 
-    public MyBigInteger flipBit(int n)
+    public BigInteger flipBit(int n)
     {
         if (n < 0)
             throw new ArithmeticException();
@@ -2182,9 +2182,9 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             return -1;
 
         if (words == null)
-            return MyMPN.findLowestBit(ival);
+            return MPN.findLowestBit(ival);
         else
-            return MyMPN.findLowestBit(words);
+            return MPN.findLowestBit(words);
     }
 
     // bit4count[I] is number of '1' bits in I.
@@ -2236,7 +2236,7 @@ public class MyBigInteger extends Number implements Comparable<MyBigInteger>
             this.words = null;
         } else {
             words = byteArrayToIntArray(magnitude, signum < 0 ? -1 : 0);
-            MyBigInteger result = make(words, words.length);
+            BigInteger result = make(words, words.length);
             this.ival = result.ival;
             this.words = result.words;
         }

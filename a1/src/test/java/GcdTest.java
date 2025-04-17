@@ -1,7 +1,5 @@
-import com.fow.MyBigInteger;
+import com.fow.BigInteger;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigInteger;
 
 public class GcdTest {
 
@@ -18,8 +16,8 @@ public class GcdTest {
     public void testGcd1() {
 
 
-        MyBigInteger myBigInteger = new MyBigInteger("12122112121212121212");
-        System.out.println(myBigInteger);
+        BigInteger bigInteger = new BigInteger("12122112121212121212");
+        System.out.println(bigInteger);
 
 
     }
