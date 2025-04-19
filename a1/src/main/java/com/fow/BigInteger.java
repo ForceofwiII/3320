@@ -1197,41 +1197,41 @@ public class BigInteger extends Number implements Comparable<BigInteger>
 
     public BigInteger gcd(BigInteger y)
     {
-        int xval = ival;
-        int yval = y.ival;
-        if (words == null)
+        int xval = ival;      //
+        int yval = y.ival; //
+        if (words == null) // t f
         {
-            if (xval == 0)
+            if (xval == 0)  // f t
             {
-                return abs(y);
+                return abs(y);  //
             }
 
-            if (y.words == null && xval != Integer.MIN_VALUE && yval != Integer.MIN_VALUE)
+            if (y.words == null && xval != Integer.MIN_VALUE && yval != Integer.MIN_VALUE)// f t
             {
-                if (xval < 0)
+                if (xval < 0)//t f
                 {
-                    xval = -xval;
+                    xval = -xval;//
                 }
 
-                if (yval < 0)
+                if (yval < 0)// t f
                 {
-                    yval = -yval;
+                    yval = -yval;//
                 }
 
-                return valueOf(gcd(xval, yval));
+                return valueOf(gcd(xval, yval));//
             }
 
-            xval = 1;
+            xval = 1; //
         }
 
-        if (y.words == null)
+        if (y.words == null)  // f t
         {
-            if (yval == 0)
+            if (yval == 0) // t f
             {
                 return abs(this);
             }
 
-            yval = 1;
+            yval = 1; //
         }
 
         int len = (xval > yval ? xval : yval) + 1;
