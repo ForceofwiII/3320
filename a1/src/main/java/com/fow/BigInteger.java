@@ -17,8 +17,7 @@ import java.util.Random;
  * @date December 20, 1999.
  * @status believed complete and correct.
  */
-public class BigInteger extends Number implements Comparable<BigInteger>
-{
+public class BigInteger extends Number implements Comparable<BigInteger> {
     /**
      * All integers are stored in 2's-complement form.
      * If words == null, the ival is the value of this main.BigInteger.
@@ -47,8 +46,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
     private static final int numFixNum = maxFixNum - minFixNum + 1;
     private static final BigInteger[] smallFixNums = new BigInteger[numFixNum];
 
-    static
-    {
+    static {
         for (int i = numFixNum; --i >= 0; )
             smallFixNums[i] = new BigInteger(i + minFixNum);
     }
@@ -86,9 +84,9 @@ public class BigInteger extends Number implements Comparable<BigInteger>
      */
     private static final int[] primes =
             {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43,
-            47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107,
-            109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
-            191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251};
+                    47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107,
+                    109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
+                    191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251};
 
     /**
      * HAC (Handbook of Applied Cryptography), Alfred Menezes & al. Table 4.4.
@@ -96,29 +94,26 @@ public class BigInteger extends Number implements Comparable<BigInteger>
     private static final int[] k = {100, 150, 200, 250, 300, 350, 400, 500, 600, 800, 1250, Integer.MAX_VALUE};
     private static final int[] t = {27, 18, 15, 12, 9, 8, 7, 6, 5, 4, 3, 2};
 
-    private BigInteger() {}
+    private BigInteger() {
+    }
 
     /* Create a new (non-shared) main.BigInteger, and initialize to an int. */
-    private BigInteger(int value)
-    {
+    private BigInteger(int value) {
         ival = value;
     }
 
-    public BigInteger(String val, int radix)
-    {
+    public BigInteger(String val, int radix) {
         BigInteger result = valueOf(val, radix);
         this.ival = result.ival;
         this.words = result.words;
     }
 
-    public BigInteger(String val)
-    {
+    public BigInteger(String val) {
         this(val, 10);
     }
 
     /* Create a new (non-shared) main.BigInteger, and initialize from a byte array. */
-    public BigInteger(byte[] val)
-    {
+    public BigInteger(byte[] val) {
         if (val == null || val.length < 1)
             throw new NumberFormatException();
 
@@ -128,8 +123,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
         this.words = result.words;
     }
 
-    public BigInteger(int signum, byte[] magnitude)
-    {
+    public BigInteger(int signum, byte[] magnitude) {
         if (magnitude == null || signum > 1 || signum < -1)
             throw new NumberFormatException();
 
@@ -152,16 +146,14 @@ public class BigInteger extends Number implements Comparable<BigInteger>
             setNegative();
     }
 
-    public BigInteger(int numBits, Random rnd)
-    {
+    public BigInteger(int numBits, Random rnd) {
         if (numBits < 0)
             throw new IllegalArgumentException();
 
         init(numBits, rnd);
     }
 
-    private void init(int numBits, Random rnd)
-    {
+    private void init(int numBits, Random rnd) {
         int highbits = numBits & 31;
         // minimum number of bytes to store the above number of bits
         int highBitByteCount = (highbits + 7) / 8;
@@ -193,8 +185,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
         }
     }
 
-    public BigInteger(int bitLength, int certainty, Random rnd)
-    {
+    public BigInteger(int bitLength, int certainty, Random rnd) {
         this(bitLength, rnd);
 
         // Keep going until we find a probable prime.
@@ -220,8 +211,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
      * @throws ArithmeticException if bitLength < 2
      * @since 1.4
      */
-    public static BigInteger probablePrime(int bitLength, Random rnd)
-    {
+    public static BigInteger probablePrime(int bitLength, Random rnd) {
         if (bitLength < 2)
             throw new ArithmeticException();
 
@@ -231,8 +221,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
     /**
      * Return a (possibly-shared) main.BigInteger with a given long value.
      */
-    public static BigInteger valueOf(long val)
-    {
+    public static BigInteger valueOf(long val) {
         if (val >= minFixNum && val <= maxFixNum)
             return smallFixNums[(int) val - minFixNum];
         int i = (int) val;
@@ -249,8 +238,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
      * Make a canonicalized main.BigInteger from an array of words.
      * The array may be reused (without copying).
      */
-    private static BigInteger make(int[] words, int len)
-    {
+    private static BigInteger make(int[] words, int len) {
         if (words == null)
             return valueOf(len);
         len = BigInteger.wordsNeeded(words, len);
@@ -265,8 +253,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
     /**
      * Convert a big-endian byte array to a little-endian array of words.
      */
-    private static int[] byteArrayToIntArray(byte[] bytes, int sign)
-    {
+    private static int[] byteArrayToIntArray(byte[] bytes, int sign) {
         // Determine number of words needed.
         int[] words = new int[bytes.length / 4 + 1];
         int nwords = words.length;
@@ -292,8 +279,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
      *
      * @param nwords number of words to allocate
      */
-    private static BigInteger alloc(int nwords)
-    {
+    private static BigInteger alloc(int nwords) {
         BigInteger result = new BigInteger();
         if (nwords > 1)
             result.words = new int[nwords];
@@ -304,8 +290,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
      * Change words.length to nwords.
      * We allow words.length to be upto nwords+2 without reallocating.
      */
-    private void realloc(int nwords)
-    {
+    private void realloc(int nwords) {
         if (nwords == 0) {
             if (words != null) {
                 if (ival > 0)
@@ -328,13 +313,11 @@ public class BigInteger extends Number implements Comparable<BigInteger>
         }
     }
 
-    private boolean isNegative()
-    {
+    private boolean isNegative() {
         return (words == null ? ival : words[ival - 1]) < 0;
     }
 
-    public int signum()
-    {
+    public int signum() {
         if (ival == 0 && words == null)
             return 0;
         int top = words == null ? ival : words[ival - 1];
@@ -343,29 +326,35 @@ public class BigInteger extends Number implements Comparable<BigInteger>
 
     private static int compareTo(BigInteger x, BigInteger y)
     {
-        if (x.words == null && y.words == null)
+        if (x.words == null && y.words == null) //f t
         {
-            return x.ival < y.ival ? -1 : x.ival > y.ival ? 1 : 0;
+            return x.ival < y.ival ? -1 : x.ival > y.ival ? 1 : 0; // 1 t f  2 f t
         }
 
         boolean x_negative = x.isNegative();
         boolean y_negative = y.isNegative();
 
-        if (x_negative != y_negative)
+        if (x_negative != y_negative)  // t f
         {
-            return x_negative ? -1 : 1;
+            return x_negative ? -1 : 1;  // f t
         }
 
-        int x_len = x.words == null ? 1 : x.ival;
-        int y_len = y.words == null ? 1 : y.ival;
+        int x_len = x.words == null ? 1 : x.ival; // f t
+        int y_len = y.words == null ? 1 : y.ival; // f t
 
-        if (x_len != y_len)
+        if (x_len != y_len) // f t
         {
-            return (x_len > y_len) != x_negative ? 1 : -1;
-        }
+            return (x_len > y_len) != x_negative ? 1 : -1;  //  2 t f
 
-        return MPN.cmp(x.words, y.words, x_len);
+
+        }
+        return MPN.cmp(x.words, y.words, x_len); //
     }
+
+
+
+
+
 
     /**
      * @since 1.2
@@ -1195,7 +1184,7 @@ public class BigInteger extends Number implements Comparable<BigInteger>
         }
     }
 
-    public BigInteger gcd(BigInteger y)
+    public BigInteger  gcd(BigInteger y)
     {
         int xval = ival;      //
         int yval = y.ival; //
