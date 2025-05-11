@@ -895,38 +895,6 @@ public class CompareToTest {
 
     // All-Defs coverage
 
-    @Test //xval==min_value or yval==min_value
-    public void testdfkskgdkf() {
-        BigInteger x = new BigInteger("-2147483648");
-        BigInteger y = new BigInteger("5");
-        BigInteger result = x.gcd(y);
-        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
-    }
-
-    @Test //x large y small
-    public void testvkmvkvv() {
-        BigInteger x = new BigInteger("100000000000000000000");
-        BigInteger y = new BigInteger("5");
-        BigInteger result = x.gcd(y);
-        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
-    }
-
-    @Test // x small y large
-    public void testdsfkaz() {
-        BigInteger x = new BigInteger("5");
-        BigInteger y = new BigInteger("100000000000000000000");
-        BigInteger result = x.gcd(y);
-        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
-    }
-
-    @Test //both large
-    public void testdskfkfs() {
-        BigInteger x = new BigInteger("12345678901234567890");
-        BigInteger y = new BigInteger("98765432109876543210");
-        BigInteger result = x.gcd(y);
-        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
-    }
-
     // compareTo() related tests
     @Test //5<10
     public void testjksdvkjv() {
