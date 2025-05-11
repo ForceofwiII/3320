@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GcdTest {
 
-    // 1. test case for 100% Statement Coverage
+    //  100% Statement Coverage
 
     @Test
     public void testskjdfkj() {
@@ -57,7 +57,7 @@ public class GcdTest {
         assertNotNull(result);
     }
 
-    // 100% 分支覆盖（Branch/Decision Coverage）
+    // 100% （Branch/Decision Coverage）
 
     @Test
     public void test2349098() {
@@ -280,7 +280,7 @@ public class GcdTest {
         assertEquals(x, result);
     }
 
-    // 100% 条件决策覆盖
+    // 100% condition/decision coverage
 
     @Test
     public void testfdsakjv() {
@@ -377,7 +377,7 @@ public class GcdTest {
         assertNotNull(result);
     }
 
-    // 100% 多条件覆盖
+    // 100% multiple condition coverage
 
     @Test
     public void testfsdkj() {
@@ -768,35 +768,47 @@ public class GcdTest {
         assertEquals(y, result);
     }
 
-    //全定义覆盖
+    //All-Defs coverage
 
-    @Test
-    public void testqkjkjfkjdv() {
+    // gcd() related tests
+    @Test //xval=0
+    public void testgmkmgkgkm() {
+        BigInteger x = new BigInteger("0");
+        BigInteger y = new BigInteger("25");
+        assertEquals(y.abs(), x.gcd(y));
+    }
+    @Test//small number
+    public void testdskfdjgg() {
         BigInteger x = new BigInteger("18");
         BigInteger y = new BigInteger("12");
         assertEquals(new BigInteger("6"), x.gcd(y));
     }
 
-    @Test
-    public void testfdjskfqk() {
-        BigInteger x = new BigInteger("0");
-        BigInteger y = new BigInteger("25");
-        assertEquals(new BigInteger("25"), x.gcd(y));
-    }
-
-    @Test
-    public void testdkjfldjv() {
-        BigInteger x = new BigInteger("12345678901234567890");
-        BigInteger y = new BigInteger("98765432109876543210");
-        BigInteger result = x.gcd(y);
-        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
-
+    @Test//small number, x negative, y positive
+    public void testfdsfdskjf() {
+        BigInteger x = new BigInteger("-18");
+        BigInteger y = new BigInteger("12");
+        assertEquals(new BigInteger("6"), x.gcd(y));
     }
 
 
+    @Test // small, x positive, y negative
+    public void testzkgkgkk() {
+        BigInteger x = new BigInteger("18");
+        BigInteger y = new BigInteger("-12");
+        assertEquals(new BigInteger("6"), x.gcd(y));
+    }
+
+    @Test //both neg
+    public void testfdjskjgl() {
+        BigInteger x = new BigInteger("-18");
+        BigInteger y = new BigInteger("-12");
+        assertEquals(new BigInteger("6"), x.gcd(y));
+    }
 
 
-    // 全用例覆盖
+
+    // All-uses coverage
 
     @Test
     void testjsldk() {

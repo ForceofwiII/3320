@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CompareToTest {
 
-    // 100%语句覆盖
+    // 100% statement coverage
 
     @Test
     public void test1() {
@@ -95,7 +95,7 @@ public class CompareToTest {
 
     }
 
-    // 100%决策覆盖
+    //  100% branch coverage
     @Test
     public void test41() {
 
@@ -184,7 +184,7 @@ public class CompareToTest {
 
     }
 
-    // 100%条件覆盖
+    // 100% condition coverage
 
     @Test
     public void test12() {
@@ -296,7 +296,7 @@ public class CompareToTest {
 
     }
 
-    // 100%条件/决策覆盖
+    // 100% condition/decision coverage
 
     @Test
     public void test22312() {
@@ -893,31 +893,104 @@ public class CompareToTest {
         assertEquals(x, result2);
     }
 
-    //全定义覆盖
+    // All-Defs coverage
+
+    @Test //xval==min_value or yval==min_value
+    public void testdfkskgdkf() {
+        BigInteger x = new BigInteger("-2147483648");
+        BigInteger y = new BigInteger("5");
+        BigInteger result = x.gcd(y);
+        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
+    }
+
+    @Test //x large y small
+    public void testvkmvkvv() {
+        BigInteger x = new BigInteger("100000000000000000000");
+        BigInteger y = new BigInteger("5");
+        BigInteger result = x.gcd(y);
+        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
+    }
+
+    @Test // x small y large
+    public void testdsfkaz() {
+        BigInteger x = new BigInteger("5");
+        BigInteger y = new BigInteger("100000000000000000000");
+        BigInteger result = x.gcd(y);
+        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
+    }
+
+    @Test //both large
+    public void testdskfkfs() {
+        BigInteger x = new BigInteger("12345678901234567890");
+        BigInteger y = new BigInteger("98765432109876543210");
+        BigInteger result = x.gcd(y);
+        assertTrue(result.compareTo(BigInteger.ONE) >= 0);
+    }
+
+    // compareTo() related tests
+    @Test //5<10
+    public void testjksdvkjv() {
+        BigInteger x = new BigInteger("5");
+        BigInteger y = new BigInteger("10");
+        assertTrue(x.compareTo(y) < 0);
+    }
+
+    @Test //10>5
+    public void testkjsdfkjksjdf() {
+        BigInteger x = new BigInteger("10");
+        BigInteger y = new BigInteger("5");
+        assertTrue(x.compareTo(y) > 0);
+    }
 
     @Test
-    public void testdfjkkg() {
+    public void testkfjsdkjfkljds() {
         BigInteger x = new BigInteger("5");
         BigInteger y = new BigInteger("-10");
         assertTrue(x.compareTo(y) > 0);
     }
 
     @Test
-    public void testdfsjkjgj() {
+    public void testkmsdfklfds() {
+        BigInteger x = new BigInteger("-5");
+        BigInteger y = new BigInteger("10");
+        assertTrue(x.compareTo(y) < 0);
+    }
+
+    @Test // x large,y small
+    public void testjskdgkljfd() {
         BigInteger x = new BigInteger("100000000000000000000");
         BigInteger y = new BigInteger("100");
         assertTrue(x.compareTo(y) > 0);
     }
 
-    @Test
-    public void testdfkllk() {
+    @Test // x small,y laege
+    public void testdsgfkjgkl() {
+        BigInteger x = new BigInteger("100");
+        BigInteger y = new BigInteger("100000000000000000000");
+        assertTrue(x.compareTo(y) < 0);
+    }
+
+    @Test // both large,x>y
+    public void testBothlargeIntA() {
+        BigInteger x = new BigInteger("987654321987654321");
+        BigInteger y = new BigInteger("123456789123456789");
+        assertTrue(x.compareTo(y) > 0);
+    }
+    @Test // both large,x<y
+    public void testgkmdf() {
+        BigInteger x = new BigInteger("123456789123456789");
+        BigInteger y = new BigInteger("987654321987654321");
+        assertTrue(x.compareTo(y) < 0);
+    }
+
+    @Test //large, equal
+    public void testdskfjjkglj() {
         BigInteger x = new BigInteger("123456789");
         BigInteger y = new BigInteger("123456789");
         assertEquals(0, x.compareTo(y));
     }
 
-
-    // 全用例覆盖
+    // All-uses coverage
 
     @Test
     public void test412121() {
