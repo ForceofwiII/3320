@@ -2238,4 +2238,21 @@ public class BigInteger extends Number implements Comparable<BigInteger> {
         magnitude = signum == 0 ? new byte[0] : toByteArray();
         s.defaultWriteObject();
     }
+
+    /** only for debugging，Get the ival value of the current object */
+    public String debugState(String label) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(label).append(" | ");
+        if (words == null) {
+            sb.append("words == null, ival = ").append(ival)
+                    .append(", value = ").append(this.toString());
+        } else {
+            sb.append("words != null")
+                    .append(", ival(used length) = ").append(ival)
+                    // .append(", words.length = ").append(words.length)
+                    .append(", words[ival-1] = ").append(words[ival-1])
+                    .append(", value = ").append(this.toString());
+        }
+        return sb.toString();
+    }
 }
